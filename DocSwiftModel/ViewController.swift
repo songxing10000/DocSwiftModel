@@ -232,30 +232,31 @@ struct ReplyListResList: ExAutoCodable {
         textView?.setUpLineNumberView()
     }
     @IBAction func clickCopyBtn(_ sender: NSButton) {
-        let task = Process()
-        let processName = "siri" // 要检测的进程名称
+        DispatchQueue.main.async {
+            // 创建一个 NSPasteboard 实例
+            let pasteboard = NSPasteboard.general
 
-                task.launchPath = "/usr/bin/pgrep"
-                task.arguments = ["-i", processName]
+            // 设置要复制的文本内容
+            let textToCopy = self.m_bottomTextView.string
+
+            // 将文本内容写入粘贴板
+            pasteboard.clearContents() // 清空粘贴板上的内容
+            pasteboard.setString(textToCopy, forType: .string) // 将文本内容写入粘贴板
+
+            // 检查是否成功复制到粘贴板
+            if pasteboard.string(forType: .string) != nil {
+                sender.title = "复制成功"
                 
-                let pipe = Pipe()
-                task.standardOutput = pipe
-                task.launch()
-                
-                let data = pipe.fileHandleForReading.readDataToEndOfFile()
-                let output = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines)
-                
-                if task.terminationStatus == 0 {
-                    print("\(processName) 进程已找到！")
-                    // 结束应用程序
-                    let killTask = Process()
-                    killTask.launchPath = "/usr/bin/pkill"
-                    killTask.arguments = ["-f", processName]
-                    killTask.launch()
-                } else {
-                    print("\(processName) 进程未找到！")
-                }
+            } else {
+                sender.title = "无法复制到粘贴板"
+            }
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2, execute: {
+                 
+                sender.title = "复制"
+            })
         }
+        
+    }
     @IBAction func clickRefreshBtn(_ sender: NSButton) {
         if m_topLeftTextView.string.contains("//") == true {
             mergeCodeFrom(docTextView: m_topLeftTextView, typeTextView: m_topRightTextView, outTextView: m_bottomTextView)
