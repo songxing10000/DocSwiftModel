@@ -1,5 +1,5 @@
 # Uncomment the next line to define a global platform for your project
-platform :osx, '10.15'
+platform :osx, '13.1'
 inhibit_all_warnings!
 
 target 'DocSwiftModel' do
