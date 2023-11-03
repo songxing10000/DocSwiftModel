@@ -258,11 +258,12 @@ struct ReplyListResList: ExAutoCodable {
         
     }
     @IBAction func clickRefreshBtn(_ sender: NSButton) {
-        if m_topLeftTextView.string.contains("//") == true {
+         
+        if m_topLeftTextView.string.range(of: "\\p{Han}", options: .regularExpression) != nil {
             mergeCodeFrom(docTextView: m_topLeftTextView, typeTextView: m_topRightTextView, outTextView: m_bottomTextView)
             return
         }
-        if m_topRightTextView.string.contains("//") == true {
+        if m_topRightTextView.string.range(of: "\\p{Han}", options: .regularExpression) != nil {
             mergeCodeFrom(docTextView: m_topRightTextView, typeTextView: m_topLeftTextView, outTextView: m_bottomTextView)
             return
         }
